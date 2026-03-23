@@ -1,0 +1,147 @@
+{
+	"info": {
+		"_postman_id": "e3b44b8a-ae46-4443-8515-ab23adabc123",
+		"name": "thresh — Zero Trust Architecture",
+		"description": "Integration tests to prove the Cloudflare Edge correctly protects the Spring Boot Origin.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "🟢 Legitimate Traffic (Through Edge)",
+			"item": [
+				{
+					"name": "1. Health Route (Should Return 200)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://thresh-cf.kunaltripathi2153.workers.dev/api/health",
+							"protocol": "https",
+							"host": [
+								"thresh-cf",
+								"kunaltripathi2153",
+								"workers",
+								"dev"
+							],
+							"path": [
+								"api",
+								"health"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2. Protected Data (Paste Valid JWT Here)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer <PASTE_YOUR_LONG_JWT_HERE>",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://thresh-cf.kunaltripathi2153.workers.dev/api/protected",
+							"protocol": "https",
+							"host": [
+								"thresh-cf",
+								"kunaltripathi2153",
+								"workers",
+								"dev"
+							],
+							"path": [
+								"api",
+								"protected"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "🔴 Blocked by Edge (DDoS / Bad Auth)",
+			"item": [
+				{
+					"name": "3. Missing Token (Should Return 401)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://thresh-cf.kunaltripathi2153.workers.dev/api/protected",
+							"protocol": "https",
+							"host": [
+								"thresh-cf",
+								"kunaltripathi2153",
+								"workers",
+								"dev"
+							],
+							"path": [
+								"api",
+								"protected"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "4. Forged Token (Should Return 401)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGci.Forged.Signature",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://thresh-cf.kunaltripathi2153.workers.dev/api/protected",
+							"protocol": "https",
+							"host": [
+								"thresh-cf",
+								"kunaltripathi2153",
+								"workers",
+								"dev"
+							],
+							"path": [
+								"api",
+								"protected"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "🛑 Blocked by Origin (Zero Trust Defense)",
+			"item": [
+				{
+					"name": "5. Direct Origin Attack (Should Return 403 Forbidden)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://thresh-production.up.railway.app/api/health",
+							"protocol": "https",
+							"host": [
+								"thresh-production",
+								"up",
+								"railway",
+								"app"
+							],
+							"path": [
+								"api",
+								"health"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

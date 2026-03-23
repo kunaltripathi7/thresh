@@ -12,6 +12,19 @@ export default {
 
 		const path = url.pathname;
 		const newRequest = new Request(env.THRESH_BACKEND_URL + path, request);
+
+
+		if (path == "/api/token") {
+			const secret = new TextEncoder().encode(env.JWT_SECRET);
+			const token = await new jose.SignJWT({ sub: "demo_user" })
+				.setProtectedHeader({ alg: "HS256" })
+				.setExpirationTime("5m")
+				.sign(secret);
+			return new Response(JSON.stringify({ token: token, message: "Use this token as a bearer header to access /api/protected" }), {
+				headers: { "Content-Type": "application/json" }
+			})
+		}
+
 		newRequest.headers.append("X-Edge-Token", env.EDGE_SECRET);
 
 		if (url.pathname === "/api/health" || url.pathname == "/api/public") return fetch(newRequest);
