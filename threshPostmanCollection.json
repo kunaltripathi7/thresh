@@ -10,6 +10,28 @@
 			"name": "🟢 Legitimate Traffic (Through Edge)",
 			"item": [
 				{
+					"name": "0. Generate Demo Token",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://thresh-cf.kunaltripathi2153.workers.dev/api/token",
+							"protocol": "https",
+							"host": [
+								"thresh-cf",
+								"kunaltripathi2153",
+								"workers",
+								"dev"
+							],
+							"path": [
+								"api",
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "1. Health Route (Should Return 200)",
 					"request": {
 						"method": "GET",
@@ -38,7 +60,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer <PASTE_YOUR_LONG_JWT_HERE>",
+								"value": "Bearer <PASTE_NEWLY_GENERATED_TOKEN_HERE>",
 								"type": "text"
 							}
 						],
@@ -120,7 +142,7 @@
 			"name": "🛑 Blocked by Origin (Zero Trust Defense)",
 			"item": [
 				{
-					"name": "5. Direct Origin Attack (Should Return 403 Forbidden)",
+					"name": "5. Direct Origin Attack (Should Return 403)",
 					"request": {
 						"method": "GET",
 						"header": [],
