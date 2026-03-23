@@ -1,18 +1,29 @@
-/**
- * Welcome to Cloudflare Workers! This is your first worker.
- *
- * - Run `npm run dev` in your terminal to start a development server
- * - Open a browser tab at http://localhost:8787/ to see your worker in action
- * - Run `npm run deploy` to publish your worker
- *
- * Bind resources to your worker in `wrangler.jsonc`. After adding bindings, a type definition for the
- * `Env` object can be regenerated with `npm run cf-typegen`.
- *
- * Learn more at https://developers.cloudflare.com/workers/
- */
+import { Hono } from "hono";
 
-export default {
-	async fetch(request, env, ctx): Promise<Response> {
-		return new Response('Hello, get started');
-	},
-} satisfies ExportedHandler<Env>;
+export interface Env {
+	AI: Ai;
+}
+
+const app = new Hono<{ Bindings: Env }>()
+
+app.get("/", c => {
+	return c.json({ hello: "World" })
+})
+
+app.post("/messages", async (c) => {
+	const body = await c.req.json();
+	const prompt = body.prompt;
+
+	if (!prompt) {
+		return c.json({ error: "Missing 'prompt' in request body" }, 400);
+	}
+
+	// @ts-expect-error - model name might not be in the generated types yet
+	const response = await c.env.AI.run("@cf/meta/llama-3.1-8b-instruct", {
+		messages: [{ role: "user", content: prompt }]
+	});
+
+	return c.json(response);
+});
+
+export default app;
