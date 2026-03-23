@@ -1,3 +1,4 @@
+package com.cdn.thresh_backend;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
